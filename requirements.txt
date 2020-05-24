@@ -3,5 +3,4 @@ spacy
 google-cloud-vision==1.0.0
 azure-cognitiveservices-vision-computervision>=0.3.0
 azure-common
-asyncio
-pandas  
+azure-cognitiveservices-speech

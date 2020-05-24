@@ -1,23 +1,22 @@
 # pip install spacy
 # python -m spacy download en_core_web_sm
-import spacy
-from spacy import displacy
-
-import os
-from pathlib import Path
 import json
-try:
-    from inspect import getfullargspec as get_arg_spec
-except ImportError:
-    from inspect import getargspec as get_arg_spec
 import os
 import sys
 import types
+from pathlib import Path
 
 # Azure CV Support
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
-from ocrlayout.bboxhelper import BBOXOCRResponse,BBoxHelper
+
+from ocrlayout.bboxhelper import BBoxHelper, BBOXOCRResponse
+
+try:
+    from inspect import getfullargspec as get_arg_spec
+except ImportError:
+    from inspect import getargspec as get_arg_spec
+
 
 IMAGES_FOLDER = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "./images")
@@ -36,10 +35,7 @@ def iterate_all_images(ocrengines=[],filter=None,callOCR=True,verbose=False):
         if '.DS_Store' in filename:
             continue
         for engine in ocrengines:
-            (orig,new) = engine(os.path.join(IMAGES_FOLDER, filename),callOCR,verbose)
-            doc1=spacy_me(filename,orig,"ORIG")
-            doc2=spacy_me(filename,new,"NEW")
-            displacy.serve([doc1,doc2], style="ent")
+            engine(os.path.join(IMAGES_FOLDER, filename),callOCR,verbose)
 
 def azure_batch_read_file_in_stream(filename=None,callOCR=True,verbose=False):
     """RecognizeTextUsingBatchReadAPI.
@@ -92,42 +88,24 @@ def azure_batch_read_file_in_stream(filename=None,callOCR=True,verbose=False):
 
     # Convert the original ocrresponse into proper object
     ocrresponse=BBOXOCRResponse.from_azure(json.loads(ocrresponse))
-    # load the original
+
+    # load the original response to get the text as-is
     original_text=""
     for page in ocrresponse.pages:
-        for line in page.Lines:
-            original_text+=(line.Text)
+        for line in page.lines:
+            original_text+=(line.text)
             original_text+=('\n')
+
+    with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.before.txt"), 'w') as outfile:
+        outfile.write(original_text)
 
     # Create BBOX OCR Response from Azure CV string response
     bboxresponse=BBoxHelper(verbose=verbose).processAzureOCRResponse(ocrresponse,boxSeparator=["","\r\n"])
 
-    return (original_text,bboxresponse.Text)
+    with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.after.txt"), 'w') as outfile:
+        outfile.write(bboxresponse.text)
 
-def spacy_me(filename,text,tag):
-    # Load English tokenizer, tagger, parser, NER and word vectors
-    nlp = spacy.load("en_core_web_sm")
-
-    doc = nlp(text)
-    # Analyze syntax
-    print(tag+"|Noun phrases:", [chunk.text for chunk in doc.noun_chunks])
-    print(tag+"|Verbs:", [token.lemma_ for token in doc if token.pos_ == "VERB"])
-
-    # Find named entities, phrases and concepts
-    entities=[]
-    for entity in doc.ents:
-        entities.append(entity.text+" "+entity.label_)
-    with open(os.path.join(RESULTS_FOLDER, filename+"."+tag+".spacy.named_entities.json"), 'w') as outfile:
-        outfile.write("\n".join(sorted(entities)))
-    # Extract the sentences...
-    sentences=[]
-    for sent in doc.sents:
-        sentences.append(sent.text)
-    with open(os.path.join(RESULTS_FOLDER, filename+"."+tag+".spacy.sentences.json"), 'w') as outfile:
-        outfile.write("\n".join(sentences))
-
-    doc.user_data["title"] = (filename+"."+tag)
-    return doc
+    return (original_text,bboxresponse.text)
 
 if __name__ == "__main__":
     import sys, os.path
@@ -173,8 +151,6 @@ if __name__ == "__main__":
         else:
             for engine in ocrengines:
                 (orig,new) = engine(filename=args.image,callOCR=args.callocr,verbose=args.verbose)
-                spacy_me(orig,"ORGI")
-                spacy_me(new,"NEW")
     else:
         if args.imagesdir:
             if not os.path.exists(args.imagesdir):
@@ -184,4 +160,3 @@ if __name__ == "__main__":
                 IMAGES_FOLDER=args.imagesdir
         # Process all images contained the IMAGES_FOLDER
         iterate_all_images(ocrengines=ocrengines,filter=args.filter,callOCR=args.callocr,verbose=args.verbose)
-        
