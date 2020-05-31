@@ -32,10 +32,10 @@ def iterate_all_images(filter=None):
         with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.after.txt"), 'r') as cachefile:
             ocrresponse = cachefile.read().replace('\n', '')
 
-        # language = "de-DE"
-        # speech_synthesis_with_language(imgname,ocrresponse,language="en-US",voice="en-US-AriaNeural")
-        speech_synthesis_with_language(imgname,ocrresponse,language="en-US",voice="en-AU-NatashaNeural")
-
+        if "de_" in imgname:
+            speech_synthesis_with_language(imgname,ocrresponse,language="de-DE",voice="de-DE-KatjaNeural")
+        elif "en_" in imgname:
+            speech_synthesis_with_language(imgname,ocrresponse,language="en-US",voice="en-AU-NatashaNeural")
 
 def speech_synthesis_with_language(input_doc_name,input_doc,language,voice):
     """performs speech synthesis to the default speaker with specified spoken language"""

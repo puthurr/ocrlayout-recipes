@@ -4,3 +4,5 @@ google-cloud-vision==1.0.0
 azure-cognitiveservices-vision-computervision>=0.3.0
 azure-common
 azure-cognitiveservices-speech
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.5/en_core_web_sm-2.2.5.tar.gz
+de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-2.2.5/de_core_news_sm-2.2.5.tar.gz

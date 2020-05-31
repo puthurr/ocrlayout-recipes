@@ -49,8 +49,12 @@ def iterate_all_images(filter=None):
             outfile.write(html2)
 
 def spacy_me(input_doc_name,input_doc,log_prefix):
-    # Load English tokenizer, log_prefixger, parser, NER and word vectors
-    nlp = spacy.load("en_core_web_sm")
+
+    if "en_" in input_doc_name:
+        # Load English tokenizer, log_prefixger, parser, NER and word vectors
+        nlp = spacy.load("en_core_web_sm")
+    elif "de_" in input_doc_name:
+        nlp = spacy.load("de_core_news_sm")
 
     doc = nlp(input_doc)
     # Analyze syntax
