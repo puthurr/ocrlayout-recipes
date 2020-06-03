@@ -14,7 +14,7 @@ IMAGES_FOLDER = os.path.join(os.path.dirname(
 RESULTS_FOLDER = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), "./tests-results")
 
-def iterate_all_images(filter=None):
+def speech_iterate_all_images(filter=None):
     """
     Iterate through all images located in the IMAGES_FOLDER
     """
@@ -29,7 +29,7 @@ def iterate_all_images(filter=None):
         p = Path(filename)
         (imgname,imgext) = os.path.splitext(p.name)
 
-        with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.after.txt"), 'r') as cachefile:
+        with open(os.path.join(RESULTS_FOLDER, imgname+".after.azure.read.txt"), 'r') as cachefile:
             ocrresponse = cachefile.read().replace('\n', '')
 
         if "de_" in imgname:
@@ -81,4 +81,4 @@ if __name__ == "__main__":
         os.makedirs(RESULTS_FOLDER)
 
     # Process all images contained the IMAGES_FOLDER
-    iterate_all_images()
+    speech_iterate_all_images()

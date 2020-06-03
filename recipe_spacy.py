@@ -31,13 +31,14 @@ def iterate_all_images(filter=None):
         (imgname,imgext) = os.path.splitext(p.name)
 
         # Get the BEFORE output
-        with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.before.txt"), 'r') as cachefile:
+        with open(os.path.join(RESULTS_FOLDER, imgname+".before.azure.read.txt"), 'r') as cachefile:
             orig = cachefile.read().replace('\n', '')
 
         # Get the AFTER output
-        with open(os.path.join(RESULTS_FOLDER, imgname+".azure.read.after.txt"), 'r') as cachefile:
+        with open(os.path.join(RESULTS_FOLDER, imgname+".after.azure.read.txt"), 'r') as cachefile:
             new = cachefile.read().replace('\n', '')
 
+        
         doc1=spacy_me(imgname,orig,"before")
         html1 = displacy.render(doc1,style="ent",page=True)
         with open(os.path.join(RESULTS_FOLDER, imgname+".before.spacy.entities.html"), 'w') as outfile:
