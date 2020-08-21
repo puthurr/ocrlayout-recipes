@@ -1,5 +1,5 @@
 {
-  "lineMergeChar":" ",
+  "lineMergeChar":"\n",
   "rectangleNormalization":true,
   "config": {
     "pixel": {
