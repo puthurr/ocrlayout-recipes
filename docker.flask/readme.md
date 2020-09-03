@@ -1,10 +1,8 @@
-# AZURE - OCRLayout standalone container service built using Docker, Python and Flask 
+# OCRLayout standalone container service built using Docker, Python and Flask 
 
 >This documentation is adapted from the work of the (Azure Cognitive Search Team)[https://github.com/Azure-Samples/azure-search-knowledge-mining/tree/master/03%20-%20Data%20Science%20and%20Custom%20Skills/Docker%20Flask%20Skill]
 
 Since this is hosted in a Docker container, the service can be easily scaled using Kubernetes.  This readme will walk through how to setup and configure the docker instance to run ocrlayout as a service.
-
-
 
 ## Getting Started
 
